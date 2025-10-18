@@ -1,20 +1,21 @@
-#include <gtest/gtest.h>
-#include "list_doubly_linked.h"
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Wextra
+GTEST_FLAGS = -lgtest -lgtest_main -pthread
 
-TEST(List, BasicOperations) {
-    ListDoublyLinked<int> list;
-    ASSERT_EQ(list.Size(), 0);
+TARGET = test_list_doubly_linked
+SOURCES = test_list_doubly_linked.cc
+HEADERS = list_doubly_linked.h
 
-    list.Insert(10, 0); // [10]
-    list.Insert(20, 1); // [10, 20]
-    list.Insert(15, 1); // [10, 15, 20]
-    ASSERT_EQ(list.Size(), 3);
-    ASSERT_EQ(list.Get(0), 10);
-    ASSERT_EQ(list.Get(1), 15);
-    ASSERT_EQ(list.Get(2), 20);
+# Default rule: compile the test program
+$(TARGET): $(SOURCES) $(HEADERS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SOURCES) $(GTEST_FLAGS)
 
-    list.Remove(1); // [10, 20]
-    ASSERT_EQ(list.Size(), 2);
-    ASSERT_EQ(list.Find(20), 1);
-    ASSERT_EQ(list.Find(15), -1);
-}
+# Rule to run the tests (must be called explicitly)
+.PHONY: run
+run: $(TARGET)
+	./$(TARGET)
+
+# Clean rule for convenience
+.PHONY: clean
+clean:
+	rm -f $(TARGET)
